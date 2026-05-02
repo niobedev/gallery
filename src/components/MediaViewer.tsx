@@ -8,7 +8,7 @@ import './MediaViewer.css';
 export function MediaViewer() {
   const { fileId } = useParams<{ fileId: string }>();
   const navigate = useNavigate();
-  const { getFileById, decodeMediaFile, getShareableUrl } = useMediaFiles();
+  const { getFileById, decodeMediaFile, getShareableUrl, loading: manifestLoading } = useMediaFiles();
   const [blobUrl, setBlobUrl] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -18,6 +18,10 @@ export function MediaViewer() {
 
   useEffect(() => {
     const loadMedia = async () => {
+      if (manifestLoading) {
+        return;
+      }
+
       if (!mediaFile) {
         setError('Media file not found');
         setLoading(false);
@@ -37,7 +41,7 @@ export function MediaViewer() {
     };
 
     loadMedia();
-  }, [mediaFile, decodeMediaFile]);
+  }, [mediaFile, decodeMediaFile, manifestLoading]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -78,7 +82,7 @@ export function MediaViewer() {
     navigate('/');
   };
 
-  if (loading) {
+  if (loading || manifestLoading) {
     return (
       <div className="media-viewer media-viewer--loading">
         <div className="media-viewer__spinner" />

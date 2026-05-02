@@ -39,27 +39,11 @@ export function Gallery() {
     );
   }
 
-  if (months.length === 0) {
-    return (
-      <div className="gallery gallery--empty">
-        <p className="gallery__empty-icon">
-          {currentType === 'videos' ? '🎬' : '🖼️'}
-        </p>
-        <p className="gallery__empty-text">
-          No {currentType === 'videos' ? 'videos' : 'pictures'} yet
-        </p>
-        <p className="gallery__empty-hint">
-          Add files using the encoding scripts
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className="gallery">
       <div className="gallery__header">
         <h1 className="gallery__title">Gallery</h1>
-        
+
         <div className="gallery__tabs">
           <button
             className={`gallery__tab ${currentType === 'pictures' ? 'gallery__tab--active' : ''}`}
@@ -77,14 +61,28 @@ export function Gallery() {
       </div>
 
       <div className="gallery__content">
-        {months.map((month) => (
-          <MonthSection
-            key={month}
-            month={month}
-            mediaFiles={getFilesByMonth(currentType, month)}
-            type={currentType}
-          />
-        ))}
+        {months.length === 0 ? (
+          <div className="gallery gallery--empty">
+            <p className="gallery__empty-icon">
+              {currentType === 'videos' ? '🎬' : '🖼️'}
+            </p>
+            <p className="gallery__empty-text">
+              No {currentType === 'videos' ? 'videos' : 'pictures'} yet
+            </p>
+            <p className="gallery__empty-hint">
+              Add files using the encoding scripts
+            </p>
+          </div>
+        ) : (
+          months.map((month) => (
+            <MonthSection
+              key={month}
+              month={month}
+              mediaFiles={getFilesByMonth(currentType, month)}
+              type={currentType}
+            />
+          ))
+        )}
       </div>
     </div>
   );
