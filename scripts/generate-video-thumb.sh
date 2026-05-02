@@ -40,17 +40,13 @@ fi
 
 echo "Thumbnail generated: $THUMB_PATH"
 
-TYPE=$(dirname "$VIDEO_PATH" | xargs basename)
-MONTH=$(basename "$(dirname "$VIDEO_PATH")")
-
-THUMB_OUTPUT="./scripts/encode-file.sh \"$THUMB_PATH\" \"$TYPE\" \"$MONTH\""
-eval $THUMB_OUTPUT
+./scripts/encode-file.sh "$THUMB_PATH"
 
 THUMB_FILENAME="$BASENAME-thumb.enc"
-THUMB_OUTPUT_PATH="public/encoded/$TYPE/$MONTH/$THUMB_FILENAME"
+MONTH=$(date +"%Y-%m")
+THUMB_OUTPUT_PATH="public/encoded/videos/$MONTH/$THUMB_FILENAME"
 
 echo ""
 echo "Thumbnail encoded to: $THUMB_OUTPUT_PATH"
-echo "Thumbnail filename for manifest: $THUMB_FILENAME"
 
 rm -rf "$TEMP_DIR"

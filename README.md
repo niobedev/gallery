@@ -35,25 +35,23 @@ An encrypted media gallery for pictures and videos, deployed to GitHub Pages.
 
 1. **Encode a single file:**
    ```bash
-   ./scripts/encode-file.sh /path/to/photo.jpg pictures 2025-05
-   ./scripts/encode-file.sh /path/to/video.mp4 videos 2025-05
+   ./scripts/encode-file.sh /path/to/photo.jpg
+   ./scripts/encode-file.sh /path/to/video.mp4
    ```
+
+   Type (picture/video) and date are auto-detected.
 
 2. **Encode multiple files at once:**
    ```bash
    ./scripts/encode-batch.sh /path/to/directory
    ```
 
-   The directory structure should be:
-   ```
-   /path/to/media/pictures/2025-05/
-   /path/to/media/videos/2025-05/
-   ```
+   All media files in the directory will be encoded.
 
 3. **Commit changes:**
    ```bash
    git add public/encoded/
-   git commit -m "Add new media for May 2025"
+   git commit -m "Add new media"
    git push
    ```
 

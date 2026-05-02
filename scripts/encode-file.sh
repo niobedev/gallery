@@ -1,36 +1,44 @@
 #!/bin/bash
 
 # encode-file.sh - Encode a file to Base64 with metadata
-# Usage: ./encode-file.sh <file_path> <type> <month>
-# Example: ./encode-file.sh /path/to/photo.jpg pictures 2025-05
+# Usage: ./encode-file.sh <file_path>
+# Example: ./encode-file.sh /path/to/photo.jpg
 
 set -e
 
-if [ "$#" -ne 3 ]; then
-    echo "Usage: $0 <file_path> <type> <month>"
-    echo "Type: 'pictures' or 'videos'"
-    echo "Month: YYYY-MM format"
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <file_path>"
     exit 1
 fi
 
 FILE_PATH="$1"
-TYPE="$2"
-MONTH="$3"
 
 if [ ! -f "$FILE_PATH" ]; then
     echo "Error: File not found: $FILE_PATH"
     exit 1
 fi
 
-if [ "$TYPE" != "pictures" ] && [ "$TYPE" != "videos" ]; then
-    echo "Error: Type must be 'pictures' or 'videos'"
+# Auto-detect type based on file extension
+FILENAME=$(basename "$FILE_PATH")
+FILEEXT="${FILENAME##*.}"
+FILEEXT_LOWER=$(echo "$FILEEXT" | tr '[:upper:]' '[:lower:]')
+
+VIDEO_EXTENSIONS=("mp4" "webm" "mov" "avi" "mkv" "flv" "wmv")
+IMAGE_EXTENSIONS=("jpg" "jpeg" "png" "gif" "webp" "bmp" "tiff")
+
+if [[ " ${VIDEO_EXTENSIONS[@]} " =~ " ${FILEEXT_LOWER} " ]]; then
+    TYPE="videos"
+elif [[ " ${IMAGE_EXTENSIONS[@]} " =~ " ${FILEEXT_LOWER} " ]]; then
+    TYPE="pictures"
+else
+    echo "Error: Unsupported file type: $FILEEXT"
+    echo "Supported images: jpg, jpeg, png, gif, webp, bmp, tiff"
+    echo "Supported videos: mp4, webm, mov, avi, mkv, flv, wmv"
     exit 1
 fi
 
-if [[ ! "$MONTH" =~ ^[0-9]{4}-[0-9]{2}$ ]]; then
-    echo "Error: Month must be in YYYY-MM format"
-    exit 1
-fi
+# Use current date for month
+MONTH=$(date +"%Y-%m")
 
 FILENAME=$(basename "$FILE_PATH")
 FILEEXT="${FILENAME##*.}"

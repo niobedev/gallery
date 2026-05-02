@@ -17,16 +17,7 @@ if [ ! -d "$DIR_PATH" ]; then
     exit 1
 fi
 
-TYPE=$(basename "$(dirname "$DIR_PATH")")
-MONTH=$(basename "$DIR_PATH")
-
-if [ "$TYPE" != "pictures" ] && [ "$TYPE" != "videos" ]; then
-    echo "Error: Parent directory must be 'pictures' or 'videos'"
-    exit 1
-fi
-
 echo "Encoding all files in: $DIR_PATH"
-echo "Type: $TYPE, Month: $MONTH"
 echo ""
 
 COUNT=0
@@ -35,9 +26,14 @@ for FILE in "$DIR_PATH"/*; do
     if [ -f "$FILE" ]; then
         FILENAME=$(basename "$FILE")
         if [[ ! "$FILENAME" =~ \.enc$ ]] && [[ ! "$FILENAME" =~ \.thumb\.(jpg|png)$ ]]; then
-            ./scripts/encode-file.sh "$FILE" "$TYPE" "$MONTH"
+            ./scripts/encode-file.sh "$FILE"
             
-            if [ "$TYPE" = "videos" ]; then
+            # Check if it's a video file
+            FILEEXT="${FILENAME##*.}"
+            FILEEXT_LOWER=$(echo "$FILEEXT" | tr '[:upper:]' '[:lower:]')
+            VIDEO_EXTENSIONS=("mp4" "webm" "mov" "avi" "mkv" "flv" "wmv")
+            
+            if [[ " ${VIDEO_EXTENSIONS[@]} " =~ " ${FILEEXT_LOWER} " ]]; then
                 ./scripts/generate-video-thumb.sh "$FILE"
             fi
             
@@ -49,4 +45,4 @@ done
 
 echo "Encoded $COUNT file(s)"
 echo ""
-echo "Run 'node scripts/generate-manifest.js' to update manifest.json"
+echo "Manifest will be auto-generated on commit"
