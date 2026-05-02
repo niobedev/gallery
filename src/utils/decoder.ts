@@ -11,8 +11,8 @@ const MIME_TYPES: Record<string, string> = {
 };
 
 export async function decodeFile(filename: string, type: 'pictures' | 'videos'): Promise<Blob> {
-  const response = await fetch(`/encoded/${type}/${filename}`);
-  
+  const response = await fetch(`encoded/${type}/${filename}`);
+
   if (!response.ok) {
     throw new Error(`Failed to fetch file: ${filename}`);
   }

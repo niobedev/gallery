@@ -16,12 +16,12 @@ export function useMediaFiles() {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch('/manifest.json');
-      
+      const response = await fetch('manifest.json');
+
       if (!response.ok) {
         throw new Error('Failed to load manifest');
       }
-      
+
       const data = await response.json();
       setManifest(data);
     } catch (err) {
