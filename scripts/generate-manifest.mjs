@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const ENCODED_DIR = path.join(__dirname, '../public/encoded');
-const MANIFEST_PATH = path.join(__dirname, '../manifest.json');
+const MANIFEST_PATH = path.join(__dirname, '../public/manifest.json');
 
 function parseEncFile(filePath) {
   const fileContent = fs.readFileSync(filePath, 'utf-8');
