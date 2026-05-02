@@ -31,7 +31,7 @@ export function ThumbnailGrid({ mediaFiles, type }: ThumbnailGridProps) {
   };
 
   const handleClick = (fileId: string) => {
-    navigate(`/file/${fileId}`);
+    navigate(`#/file/${fileId}`);
   };
 
   return (
