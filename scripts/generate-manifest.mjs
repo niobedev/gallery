@@ -56,9 +56,11 @@ function scanDirectory(dirPath, type) {
       
       if (metadata.filename.endsWith('-thumb.enc')) continue;
       
-      const thumbPath = path.join(monthPath, metadata.filename.replace('.enc', '-thumb.enc'));
+      metadata.filename = `${monthDir.name}/${metadata.filename}`;
+      
+      const thumbPath = path.join(monthPath, path.basename(metadata.filename).replace('.enc', '-thumb.enc'));
       if (fs.existsSync(thumbPath)) {
-        metadata.thumbnail = path.basename(thumbPath);
+        metadata.thumbnail = `${monthDir.name}/${path.basename(thumbPath)}`;
       }
       
       mediaFiles.push(metadata);

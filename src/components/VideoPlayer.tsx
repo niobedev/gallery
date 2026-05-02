@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import './VideoPlayer.css';
 
 interface VideoPlayerProps {
@@ -8,14 +8,6 @@ interface VideoPlayerProps {
 
 export function VideoPlayer({ blobUrl, orientation = 'horizontal' }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    return () => {
-      if (blobUrl) {
-        URL.revokeObjectURL(blobUrl);
-      }
-    };
-  }, [blobUrl]);
 
   return (
     <video

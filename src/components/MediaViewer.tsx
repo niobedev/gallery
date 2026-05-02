@@ -46,7 +46,7 @@ export function MediaViewer() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        navigate('#/');
+        navigate('/');
       }
     };
 
@@ -79,7 +79,7 @@ export function MediaViewer() {
   };
 
   const handleClose = () => {
-    navigate('#/');
+    navigate('/');
   };
 
   if (loading || manifestLoading) {

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import './ImageDisplay.css';
 
 interface ImageDisplayProps {
@@ -8,14 +8,6 @@ interface ImageDisplayProps {
 
 export function ImageDisplay({ blobUrl, alt }: ImageDisplayProps) {
   const imgRef = useRef<HTMLImageElement>(null);
-
-  useEffect(() => {
-    return () => {
-      if (blobUrl) {
-        URL.revokeObjectURL(blobUrl);
-      }
-    };
-  }, [blobUrl]);
 
   return (
     <img

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMediaFiles } from '../hooks/useMediaFiles';
 import type { MediaFile } from '../utils/types';
@@ -15,23 +15,27 @@ export function ThumbnailGrid({ mediaFiles, type }: ThumbnailGridProps) {
   const [thumbnails, setThumbnails] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState<Record<string, boolean>>({});
 
-  const handleThumbnailLoad = async (mediaFile: MediaFile) => {
-    if (thumbnails[mediaFile.id] || loading[mediaFile.id]) return;
+  useEffect(() => {
+    mediaFiles.forEach((mediaFile) => {
+      if (thumbnails[mediaFile.id] || loading[mediaFile.id]) return;
 
-    setLoading(prev => ({ ...prev, [mediaFile.id]: true }));
+      setLoading(prev => ({ ...prev, [mediaFile.id]: true }));
 
-    try {
-      const url = await decodeThumbnail(mediaFile);
-      setThumbnails(prev => ({ ...prev, [mediaFile.id]: url }));
-    } catch (err) {
-      console.error('Failed to load thumbnail:', err);
-    } finally {
-      setLoading(prev => ({ ...prev, [mediaFile.id]: false }));
-    }
-  };
+      decodeThumbnail(mediaFile)
+        .then((url) => {
+          if (url) setThumbnails(prev => ({ ...prev, [mediaFile.id]: url }));
+        })
+        .catch((err) => {
+          console.error('Failed to load thumbnail:', err);
+        })
+        .finally(() => {
+          setLoading(prev => ({ ...prev, [mediaFile.id]: false }));
+        });
+    });
+  }, [mediaFiles]);
 
   const handleClick = (fileId: string) => {
-    navigate(`#/file/${fileId}`);
+    navigate(`/file/${fileId}`);
   };
 
   return (
@@ -41,7 +45,6 @@ export function ThumbnailGrid({ mediaFiles, type }: ThumbnailGridProps) {
           key={mediaFile.id}
           className="thumbnail-item"
           onClick={() => handleClick(mediaFile.id)}
-          onMouseEnter={() => handleThumbnailLoad(mediaFile)}
         >
           <div className="thumbnail-item__content">
             {loading[mediaFile.id] ? (
