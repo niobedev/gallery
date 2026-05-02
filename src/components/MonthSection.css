@@ -1,0 +1,45 @@
+.month-section {
+  margin-bottom: 2rem;
+}
+
+.month-section__header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.month-section__header:hover {
+  background: #f9f9f9;
+}
+
+.month-section__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.month-section__count {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.month-section__toggle {
+  font-size: 0.75rem;
+  color: #666;
+  transition: transform 0.2s;
+}
+
+.month-section__toggle--expanded {
+  transform: rotate(180deg);
+}
+
+.month-section__content {
+  margin-top: 1rem;
+}
