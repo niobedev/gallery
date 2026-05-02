@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Pre-commit hook to regenerate manifest if .enc files are staged
-# This hook runs generate-manifest.js if any .enc files are being committed
+# This hook runs generate-manifest.mjs if any .enc files are being committed
 
 STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.enc$')
 
 if [ -n "$STAGED_FILES" ]; then
     echo "Encoded files detected, regenerating manifest.json..."
     
-    if ! node scripts/generate-manifest.js; then
+    if ! node scripts/generate-manifest.mjs; then
         echo "Error: Failed to generate manifest"
         exit 1
     fi

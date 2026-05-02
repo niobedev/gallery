@@ -40,11 +40,34 @@ fi
 
 echo "Thumbnail generated: $THUMB_PATH"
 
-./scripts/encode-file.sh "$THUMB_PATH"
-
-THUMB_FILENAME="$BASENAME-thumb.enc"
 MONTH=$(date +"%Y-%m")
-THUMB_OUTPUT_PATH="public/encoded/videos/$MONTH/$THUMB_FILENAME"
+
+# Encode the thumbnail manually to ensure it goes to videos directory
+THUMB_FILENAME="$BASENAME-thumb.enc"
+THUMB_OUTPUT_DIR="public/encoded/videos/$MONTH"
+THUMB_OUTPUT_PATH="$THUMB_OUTPUT_DIR/$THUMB_FILENAME"
+
+mkdir -p "$THUMB_OUTPUT_DIR"
+
+# Generate metadata for thumbnail
+THUMB_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+THUMBSIZE=$(stat -f%z "$THUMB_PATH" 2>/dev/null || stat -c%s "$THUMB_PATH" 2>/dev/null)
+
+THUMB_METADATA=$(cat <<EOF
+{
+  "originalName": "$BASENAME-thumb.jpg",
+  "type": "image",
+  "size": $THUMBSIZE,
+  "timestamp": "$THUMB_TIMESTAMP",
+  "width": 300,
+  "height": 300
+}
+EOF
+)
+
+# Encode thumbnail
+base64 -i "$THUMB_PATH" > "$THUMB_OUTPUT_PATH"
+echo "METADATA:$THUMB_METADATA" >> "$THUMB_OUTPUT_PATH"
 
 echo ""
 echo "Thumbnail encoded to: $THUMB_OUTPUT_PATH"

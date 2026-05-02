@@ -52,13 +52,13 @@ mkdir -p "$OUTPUT_DIR"
 METADATA=""
 
 if [ "$TYPE" = "videos" ]; then
-    if command -v ffprobe &> /dev/null; then
+    if command -v ffprobe &> /dev/null && command -v jq &> /dev/null; then
         VIDEO_INFO=$(ffprobe -v quiet -print_format json -show_format -show_streams "$FILE_PATH")
-        DURATION=$(echo "$VIDEO_INFO" | grep -o '"duration":[0-9.]*' | head -1 | cut -d: -f2)
-        WIDTH=$(echo "$VIDEO_INFO" | grep -o '"width":[0-9]*' | head -1 | cut -d: -f2)
-        HEIGHT=$(echo "$VIDEO_INFO" | grep -o '"height":[0-9]*' | head -1 | cut -d: -f2)
+        DURATION=$(echo "$VIDEO_INFO" | jq -r '.format.duration // 0')
+        WIDTH=$(echo "$VIDEO_INFO" | jq -r '.streams[] | select(.codec_type == "video") | .width // 0')
+        HEIGHT=$(echo "$VIDEO_INFO" | jq -r '.streams[] | select(.codec_type == "video") | .height // 0')
         
-        if [ -n "$WIDTH" ] && [ -n "$HEIGHT" ]; then
+        if [ -n "$WIDTH" ] && [ -n "$HEIGHT" ] && [ "$WIDTH" != "0" ] && [ "$HEIGHT" != "0" ]; then
             if [ "$HEIGHT" -gt "$WIDTH" ]; then
                 ORIENTATION="vertical"
             else
@@ -74,9 +74,9 @@ if [ "$TYPE" = "videos" ]; then
   "type": "video",
   "size": $FILESIZE,
   "timestamp": "$TIMESTAMP",
-  "duration": ${DURATION:-0},
-  "width": ${WIDTH:-0},
-  "height": ${HEIGHT:-0},
+  "duration": ${DURATION},
+  "width": ${WIDTH},
+  "height": ${HEIGHT},
   "orientation": "$ORIENTATION"
 }
 EOF
@@ -134,7 +134,7 @@ fi
 
 OUTPUT_FILE="$OUTPUT_DIR/$BASENAME.enc"
 
-base64 "$FILE_PATH" > "$OUTPUT_FILE"
+base64 -i "$FILE_PATH" > "$OUTPUT_FILE"
 echo "METADATA:$METADATA" >> "$OUTPUT_FILE"
 
 echo "Created: $OUTPUT_FILE"
